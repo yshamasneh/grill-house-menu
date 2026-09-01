@@ -218,25 +218,80 @@
   // =================================================================
   // 3. Chip click -> scroll to section, + active chip highlight on scroll
   // =================================================================
+  //
+  // A chip click's scrollIntoView() can pass over several sections on the
+  // way to its target. On mobile that native smooth-scroll runs long
+  // enough for the IntersectionObserver below to fire for an in-between
+  // section while it's still animating, and its own scrollIntoView()
+  // call (moving the chip nav) collides with and cancels the still-running
+  // page scroll — so the page settles roughly one section past the start
+  // instead of reaching the tapped chip's section. Desktop's faster
+  // animation finishes before that can happen, which is why this was
+  // invisible there. Fix: suppress the observer's side effects while a
+  // chip-triggered jump is in flight, and verify the scroll actually
+  // lands on target, re-issuing it if a browser stalls it early.
   function initChipScroll(chips, sections) {
+    var HEADER_OFFSET = 112; // matches .category's scroll-margin-top
+    var suppressObserver = false;
+
+    function setActiveChip(idx) {
+      chips.forEach(function (c) { c.removeAttribute("aria-current"); });
+      chips[idx].setAttribute("aria-current", "true");
+    }
+
+    function destinationFor(el) {
+      var maxY = document.documentElement.scrollHeight - window.innerHeight;
+      var top = el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+      return Math.max(0, Math.min(top, maxY));
+    }
+
+    function goToSection(el, idx) {
+      suppressObserver = true;
+      setActiveChip(idx);
+
+      var destination = destinationFor(el);
+      var attempts = 0;
+      var lastY = window.scrollY;
+
+      function arrived() {
+        return Math.abs(window.scrollY - destination) < 4;
+      }
+
+      function tick() {
+        attempts++;
+        if (arrived() || attempts > 20) {
+          suppressObserver = false;
+          return;
+        }
+        if (window.scrollY === lastY) {
+          // Scroll stalled before reaching the destination — re-issue it.
+          window.scrollTo({ top: destination, behavior: REDUCED_MOTION ? "auto" : "smooth" });
+        }
+        lastY = window.scrollY;
+        window.setTimeout(tick, 150);
+      }
+
+      el.scrollIntoView({ behavior: REDUCED_MOTION ? "auto" : "smooth", block: "start" });
+      window.setTimeout(tick, 150);
+    }
+
     chips.forEach(function (chip, i) {
       chip.addEventListener("click", function () {
+        chip.blur();
         var target = sections[i];
-        if (target) {
-          target.scrollIntoView({ behavior: REDUCED_MOTION ? "auto" : "smooth", block: "start" });
-        }
+        if (target) goToSection(target, i);
       });
     });
 
     if (!("IntersectionObserver" in window)) return;
 
     var observer = new IntersectionObserver(function (entries) {
+      if (suppressObserver) return;
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
         var idx = sections.indexOf(entry.target);
         if (idx === -1) return;
-        chips.forEach(function (c) { c.removeAttribute("aria-current"); });
-        chips[idx].setAttribute("aria-current", "true");
+        setActiveChip(idx);
         chips[idx].scrollIntoView({ behavior: "auto", block: "nearest", inline: "center" });
       });
     }, { rootMargin: "-45% 0px -50% 0px", threshold: 0 });

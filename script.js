@@ -120,10 +120,21 @@
     var banner = buildCategoryBanner(cat);
     if (banner) section.appendChild(banner);
     section.appendChild(buildCategoryHeader(cat));
-    section.appendChild(cat.layout === "row" ? buildDrinkRow(cat.items) : buildCardGrid(cat.items));
+    section.appendChild(cat.layout === "row" ? buildDrinkRow(cat.items) : buildCardGrid(cat.items, cat.id));
     container.appendChild(section);
     return section;
   }
+
+  // Single shared place all displayed prices go through, so the currency
+  // symbol/format stays consistent everywhere and is easy to change later.
+  function formatPrice(price) {
+    return price + "₪";
+  }
+
+  // Categories that show the "خبزة جبيتا أسود" bread add-on note on every
+  // card. Sandwiches (baguette) only, per the menu spec.
+  var ADDON_CATEGORY_IDS = { "cat-sandwiches": true };
+  var BREAD_ADDON_TEXT = "🍞 خبزة جبيتا أسود (+3₪)";
 
   // Header banner image for a category, with the logo watermarked
   // top-right. Returns null (renders nothing) if the category has no
@@ -167,16 +178,18 @@
     return header;
   }
 
-  function buildCardGrid(items) {
+  function buildCardGrid(items, catId) {
     var grid = document.createElement("div");
     grid.className = "card-grid";
+    var showAddon = ADDON_CATEGORY_IDS[catId] === true;
     items.forEach(function (item) {
       var card = document.createElement("article");
       card.className = "card";
       card.innerHTML =
         '<div class="card-row"><h3 class="card-name">' + escapeHtml(item.name) + "</h3>" +
-        '<span class="card-price">' + item.price + " ₪</span></div>" +
-        (item.desc ? '<p class="card-desc">' + escapeHtml(item.desc) + "</p>" : "");
+        '<span class="card-price">' + formatPrice(item.price) + "</span></div>" +
+        (item.desc ? '<p class="card-desc">' + escapeHtml(item.desc) + "</p>" : "") +
+        (showAddon ? '<p class="card-addon">' + BREAD_ADDON_TEXT + "</p>" : "");
       grid.appendChild(card);
     });
     return grid;
@@ -190,7 +203,7 @@
       pill.className = "drink-item";
       pill.innerHTML =
         '<div class="drink-name">' + escapeHtml(item.name) + "</div>" +
-        '<div class="drink-price">' + item.price + " ₪</div>";
+        '<div class="drink-price">' + formatPrice(item.price) + "</div>";
       row.appendChild(pill);
     });
     return row;
@@ -235,7 +248,7 @@
   // 4. WhatsApp / phone link setup
   // =================================================================
   function initContactLinks() {
-    setHref("wa-fab", "https://wa.me/" + CONTACT.whatsappPrimary);
+    setHref("wa-fab", "https://wa.me/" + CONTACT.whatsappSecondary);
     setHref("footer-wa-primary", "https://wa.me/" + CONTACT.whatsappPrimary);
     setHref("footer-wa-secondary", "https://wa.me/" + CONTACT.whatsappSecondary);
   }

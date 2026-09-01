@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grill House | القائمة</title>
+<meta name="description" content="Grill House — Real Flavor. Real Fire. القائمة الرقمية لمطعم جريل هاوس">
+<meta name="theme-color" content="#151312">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Shared SVG gradient defs used by the flame-icon accents throughout the page -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="flameGradSplash" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#E8791F"/>
+      <stop offset="1" stop-color="#F2B441"/>
+    </linearGradient>
+    <linearGradient id="flameGradTop" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#E8791F"/>
+      <stop offset="1" stop-color="#F2B441"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- ============================================================
+     Splash screen (shown 0-2s on load, then auto-fades into #menu
+     — see initSplashTransition() in script.js)
+     ============================================================ -->
+<div id="splash" role="img" aria-label="Grill House — Real Flavor. Real Fire.">
+  <div class="splash-inner">
+
+    <!-- Logo image. Fallback text wordmark shown automatically if the
+         image fails to load (see onerror below) so the layout never
+         breaks / shows a broken-image icon. -->
+    <div class="splash-logo-wrap">
+      <img
+        class="splash-logo"
+        src="assets/logo.png"
+        alt="Grill House"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+      >
+      <div class="splash-logo-fallback">
+        <span class="grill">GRILL</span><span class="house">HOUSE</span>
+      </div>
+    </div>
+
+    <svg class="splash-utensils" viewBox="0 0 24 24" fill="none" stroke="#D98A3F" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+      <path d="M4 20 18 6"/>
+      <path d="M20 20 6 6"/>
+      <path d="M15.5 3.5c1 1 1 3-1 5"/>
+      <path d="M6.5 20.5c1-3 1.5-5 3-6.5"/>
+    </svg>
+    <div class="splash-tagline">GOOD FOOD · GREAT MOOD</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     Menu screen
+     ============================================================ -->
+<div id="menu" aria-hidden="true">
+
+  <header class="topbar">
+    <div class="topbar-brand">
+      <svg class="topbar-flame" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2c.3 2.6-1 4-2.4 5.6C8.2 9.2 7 10.8 7 13a5 5 0 0 0 10 0c0-1.6-.6-2.7-1.4-3.7.2 1.4-.3 2.3-1 2.9-.2-1.7-1-2.6-2-3.6-1.4-1.4-1-3.2.4-6.6z"/>
+      </svg>
+      <div class="topbar-title">GRILL <span class="house">HOUSE</span></div>
+      <div class="topbar-sub">Real Flavor.<br>Real Fire.</div>
+    </div>
+    <div class="topbar-subtitle">
+      <p class="manager-line">بإدارة يوسف أبو ضفية</p>
+      <p class="slogan-line">مشاوي بطعم مميز... جودة نضمنها... وخدمة ترضيكم</p>
+    </div>
+
+    <!-- Category chips: rendered dynamically by renderMenu() in script.js,
+         one chip per category object in menu-data.js. Do not hardcode
+         chips here — add/remove/rename categories in menu-data.js. -->
+    <nav class="chips" id="category-chips" aria-label="أقسام القائمة"></nav>
+  </header>
+
+  <!-- ============================================================
+       Menu category sections (برجر / ساندويشات / السلطات / المقبلات /
+       البطاطا / الماجاش / المشروبات) are rendered dynamically inside
+       this single container by renderMenu() in script.js, using the
+       data in menu-data.js.
+
+       To add, remove, reorder or rename a category, edit menu-data.js
+       only — this container intentionally has no per-category markup
+       so the page and the data file can never drift out of sync.
+       ============================================================ -->
+  <main id="menu-sections" aria-label="قائمة الطعام"></main>
+
+  <footer>
+    <div class="footer-tagline">GOOD FOOD · GREAT MOOD</div>
+    <p class="footer-order-label">للطلب والاستفسار</p>
+    <div class="footer-contacts">
+      <a class="footer-wa-link" id="footer-wa-primary" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.6.1-.2.3-.7.9-.9 1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2.1c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-1 1-1 2.3 0 1.4 1 2.7 1.1 2.9.1.2 2 3.1 4.9 4.3.7.3 1.2.4 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.6-.3Z"/>
+          <path d="M12 3.5A8.5 8.5 0 0 0 4.2 15.9L3 21l5.3-1.4A8.5 8.5 0 1 0 12 3.5Zm0 15.4a6.9 6.9 0 0 1-3.5-.96l-.25-.15-3.15.83.84-3.07-.16-.26A6.9 6.9 0 1 1 12 18.9Z"/>
+        </svg>
+        0569647325
+      </a>
+      <a class="footer-wa-link" id="footer-wa-secondary" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.6.1-.2.3-.7.9-.9 1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2.1c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-1 1-1 2.3 0 1.4 1 2.7 1.1 2.9.1.2 2 3.1 4.9 4.3.7.3 1.2.4 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.6-.3Z"/>
+          <path d="M12 3.5A8.5 8.5 0 0 0 4.2 15.9L3 21l5.3-1.4A8.5 8.5 0 1 0 12 3.5Zm0 15.4a6.9 6.9 0 0 1-3.5-.96l-.25-.15-3.15.83.84-3.07-.16-.26A6.9 6.9 0 1 1 12 18.9Z"/>
+        </svg>
+        0507412340
+      </a>
+    </div>
+    <p class="footer-closing">جريل هاوس... مش أكل بس تجربة!</p>
+  </footer>
+
+  <!-- Floating WhatsApp button — href is set by initContactLinks() in script.js -->
+  <a class="wa-fab" id="wa-fab" href="#" target="_blank" rel="noopener" aria-label="تواصل معنا عبر واتساب للطلب">
+    <span class="wa-fab-inner">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.6.1-.2.3-.7.9-.9 1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2.1c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-1 1-1 2.3 0 1.4 1 2.7 1.1 2.9.1.2 2 3.1 4.9 4.3.7.3 1.2.4 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.6-.3Z"/>
+        <path d="M12 3.5A8.5 8.5 0 0 0 4.2 15.9L3 21l5.3-1.4A8.5 8.5 0 1 0 12 3.5Zm0 15.4a6.9 6.9 0 0 1-3.5-.96l-.25-.15-3.15.83.84-3.07-.16-.26A6.9 6.9 0 1 1 12 18.9Z"/>
+      </svg>
+    </span>
+  </a>
+
+</div>
+
+<script src="menu-data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

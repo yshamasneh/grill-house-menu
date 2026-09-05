@@ -28,8 +28,9 @@
 </svg>
 
 <!-- ============================================================
-     Splash screen (shown 0-2s on load, then auto-fades into #menu
-     — see initSplashTransition() in script.js)
+     Splash screen — fades into #menu when the user taps it (or the
+     button below), or automatically after 3s, whichever comes first
+     — see initSplashTransition() in script.js
      ============================================================ -->
 <div id="splash" role="img" aria-label="Grill House — Real Flavor. Real Fire.">
   <div class="splash-inner">
@@ -56,6 +57,11 @@
       <path d="M6.5 20.5c1-3 1.5-5 3-6.5"/>
     </svg>
     <div class="splash-tagline">GOOD FOOD · GREAT MOOD</div>
+
+    <!-- Tapping anywhere on the splash, or this button, reveals the menu
+         immediately; otherwise it reveals on its own after 3s (see
+         initSplashTransition() in script.js). -->
+    <button type="button" class="splash-enter" id="splash-enter">عرض المنيو</button>
   </div>
 </div>
 
@@ -74,7 +80,7 @@
     </div>
     <div class="topbar-subtitle">
       <p class="manager-line">بإدارة يوسف أبو صفية</p>
-      <p class="slogan-line">مشاوي بطعم مميز... جودة نضمنها... وخدمة ترضيكم</p>
+      <p class="slogan-line">أكل بطعم مميز... جودة نضمنها... وخدمة ترضيكم</p>
     </div>
 
     <!-- Category chips: rendered dynamically by renderMenu() in script.js,

@@ -60,12 +60,24 @@
   // =================================================================
   // 1. Splash screen -> menu transition
   // =================================================================
+  // Two ways in, whichever happens first: the user taps the splash (or
+  // the "عرض المنيو" button inside it, via event bubbling), or a 3s
+  // timer fires on its own. The "revealed" guard + clearing the timer
+  // on manual reveal make this safe against a double-transition if a
+  // click lands right as the timer would have fired.
   function initSplashTransition() {
     var splash = document.getElementById("splash");
     var menu = document.getElementById("menu");
     if (!splash || !menu) return;
 
+    var revealed = false;
+    var timerId;
+
     function reveal() {
+      if (revealed) return;
+      revealed = true;
+      window.clearTimeout(timerId);
+      splash.removeEventListener("click", reveal);
       splash.classList.add("hide");
       menu.classList.add("show");
       menu.removeAttribute("aria-hidden");
@@ -82,7 +94,8 @@
       });
     }
 
-    window.setTimeout(reveal, 2000);
+    splash.addEventListener("click", reveal);
+    timerId = window.setTimeout(reveal, 3000);
   }
 
   // =================================================================
